@@ -43,4 +43,4 @@ Add the tag to your html template as follows:
 
 # License
 
-This project is licensed under [MIT](https://github.com/jantimon/html-webpack-plugin/blob/master/LICENSE).
+This project is licensed under [MIT](https://github.com/Samciu/html-webpack-inline-asset-plugin/blob/master/LICENSE).
