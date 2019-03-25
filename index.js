@@ -27,12 +27,16 @@ HtmlWebpackInlinePlugin.prototype.getRelativeDirPaths = function (compilation, r
 
 HtmlWebpackInlinePlugin.prototype.apply = function (compiler) {
     let self = this;
-    compiler.plugin('compilation', function (compilation, options) {
-        compilation.plugin('html-webpack-plugin-after-html-processing', function (htmlPluginData, callback) {
-            let result = self.processAssetsMapHtml(compilation, htmlPluginData);
-            callback(null, result);
+    (compiler.hooks
+        ? compiler.hooks.compilation.tap.bind(compiler.hooks.compilation, 'html-webpack-inline-plugin')
+        : compiler.plugin.bind(compiler, 'compilation'))(function (compilation) {
+            (compilation.hooks
+                ? compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync.bind(compilation.hooks.htmlWebpackPluginAfterHtmlProcessing, 'html-webpack-inline-plugin')
+                : compilation.plugin.bind(compilation, 'html-webpack-plugin-after-html-processing'))(function (htmlPluginData, callback) {
+                    let result = self.processAssetsMapHtml(compilation, htmlPluginData);
+                    callback(null, result);
+                });
         });
-    });
 };
 
 HtmlWebpackInlinePlugin.prototype.processAssetsMapHtml = function (compilation, pluginData) {
@@ -80,7 +84,7 @@ HtmlWebpackInlinePlugin.prototype.processAssetsMapHtml = function (compilation, 
         });
     }
 
-    return {html}
+    return { html }
 };
 
 module.exports = HtmlWebpackInlinePlugin;
