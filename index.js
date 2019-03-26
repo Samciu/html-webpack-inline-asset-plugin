@@ -1,5 +1,5 @@
-const ReStyleTag = /<link[^>].*inline.*>/g;
-const ReScriptTag = /<script.*inline.*>/g;
+const ReStyleTag = /<link[^>]*?inline.*?>/g;
+const ReScriptTag = /<script[^>]*?inline.*?>/g;
 
 function createStyleTag(content) {
     return `<style>${content}</style>`;
