@@ -43,46 +43,45 @@ HtmlWebpackInlinePlugin.prototype.processAssetsMapHtml = function (compilation, 
     let self = this;
     let html = pluginData.html;
 
-    if (compilation.options.devServer === undefined) {
-        // 内联形式
-        html = html.replace(ReStyleTag, (match, p1, offset, string) => {
-            let result = match;
+    // 内联形式
+    html = html.replace(ReStyleTag, (match, p1, offset, string) => {
+        let result = match;
 
-            let relativeDirPaths = self.getRelativeDirPaths(compilation, pluginData.assets.css);
+        let relativeDirPaths = self.getRelativeDirPaths(compilation, pluginData.assets.css);
 
-            if (!relativeDirPaths.length) {
-                return result;
-            }
-
-            let source = '';
-            relativeDirPaths.map(relativeDirPath => {
-                source += compilation.assets[relativeDirPath].source();
-            });
-
-            result = createStyleTag(source);
-
+        if (!relativeDirPaths.length) {
             return result;
+        }
+
+        let source = '';
+        relativeDirPaths.map(relativeDirPath => {
+            source += compilation.assets[relativeDirPath].source();
         });
 
-        html = html.replace(ReScriptTag, (match, p1, offset, string) => {
-            let result = match;
+        result = createStyleTag(source);
 
-            let relativeDirPaths = self.getRelativeDirPaths(compilation, pluginData.assets.js);
+        return result;
+    });
 
-            if (!relativeDirPaths.length) {
-                return result;
-            }
+    html = html.replace(ReScriptTag, (match, p1, offset, string) => {
+        let result = match;
 
-            let source = '';
-            relativeDirPaths.map(relativeDirPath => {
-                source += compilation.assets[relativeDirPath].source();
-            });
+        let relativeDirPaths = self.getRelativeDirPaths(compilation, pluginData.assets.js);
 
-            result = createScriptTag(source);
-
+        if (!relativeDirPaths.length) {
             return result;
+        }
+
+        let source = '';
+        relativeDirPaths.map(relativeDirPath => {
+            source += compilation.assets[relativeDirPath].source();
         });
-    }
+
+        result = createScriptTag(source);
+
+        return result;
+    });
+
 
     return { html }
 };
